@@ -9,6 +9,7 @@ import {
   ActivityIndicator,
   Alert,
 } from "react-native";
+import DateTimePicker from '@react-native-community/datetimepicker';
 import { getBaladas, searchCidade, searchData } from "../services/api";
 import { Search, X } from "lucide-react-native";
 
@@ -16,7 +17,7 @@ export default function BaladasScreen({ navigation }) {
   const [baladas, setBaladas] = useState([]);
   const [loading, setLoading] = useState(false);
   const [cidade, setCidade] = useState("");
-  const [data, setData] = useState(""); // YYYY-MM-DD
+  const [data, setData] = useState(null); // YYYY-MM-DD
 
   const carregar = async () => {
     try {
@@ -114,11 +115,14 @@ const pesquisarData = async () => {
         </View>
 
         <View style={styles.inputRow}>
-          <TextInput
-            placeholder="Data (YYYY-MM-DD)"
-            style={[styles.input, { flex: 1 }]}
-            value={data}
+         <DateTimePicker
+            value={data || new Date()}
+            mode="date"
+            display="default"
             onChangeText={setData}
+            maximumDate={new Date(2026, 11, 31)}
+            minimumDate={new Date(2022, 9, 18)}
+            style={{ width: '100%' }}
           />
           {data && (
             <TouchableOpacity
@@ -138,6 +142,9 @@ const pesquisarData = async () => {
           </TouchableOpacity>
           <TouchableOpacity style={styles.clearButton} onPress={limpar}>
             <Text>Limpar</Text>
+          </TouchableOpacity>
+          <TouchableOpacity style={styles.clearButton} onPress={() => navigation.navigate("CadastrarBalada")}>
+            <Text>Criar balada</Text>
           </TouchableOpacity>
         </View>
       </View>
