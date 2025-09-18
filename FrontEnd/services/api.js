@@ -1,7 +1,8 @@
 import axios from 'axios';
 
-// Endereço base da API (onde estão os dados das baladas)
-export const API_URL = 'http://10.136.38.204:3000/Baladas';
+
+
+export const API_URL = 'http://10.136.38.202:3000/Baladas';
 
 // Busca todas as baladas cadastradas
 export const getBaladas = async () => {
@@ -26,3 +27,20 @@ export const getBaladaById = async (id) => {
   const res = await axios.get(`${API_URL}/${id}`);
   return res.data;
 };
+
+
+export const createBalada = async (balada) => {
+  const res = await axios.post(API_URL, balada);
+  return res.data;
+};
+
+export const updateBalada = async (id, balada) => {
+  const res = await axios.put(`${API_URL}/${id}`, balada);
+  return res.data;
+};
+export const deleteBalada = async (id) => {
+  const res = await axios.delete(`${API_URL}/${id}`);
+  return res.data;
+}
+
+

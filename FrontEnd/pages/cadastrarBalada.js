@@ -1,4 +1,4 @@
-// src/screens/CadastroClienteScreen.js
+// src/screens/CadastroBaladaScreen.js
 import React, { useState, useEffect } from 'react';
 import {
   View,
@@ -8,56 +8,75 @@ import {
   StyleSheet,
   Alert,
   ScrollView,
-  ActivityIndicator
+  ActivityIndicator,
+  Platform,
 } from 'react-native';
 import { Save } from 'lucide-react-native';
-// src/screens/CadastroClienteScreen.js
-import { createClient, updateClient } from "../services/api";
+import DateTimePicker from '@react-native-community/datetimepicker';
+import { createBalada, updateBalada } from '../services/api';
 
-export default function CadastroClienteScreen({ navigation, route }) {
-  const clienteExistente = route.params?.cliente;
-  const isEditando = !!clienteExistente;
+export default function CadastroBaladaScreen({ navigation, route }) {
+  const baladaExistente = route.params?.balada;
+  const isEditando = !!baladaExistente;
 
-  const [nome, setNome] = useState(clienteExistente?.nome || '');
-  const [email, setEmail] = useState(clienteExistente?.email || '');
-  const [telefone, setTelefone] = useState(clienteExistente?.telefone || '');
-  const [endereco, setEndereco] = useState(clienteExistente?.endereco || '');
+  const [nome, setNome] = useState(baladaExistente?.nome || '');
+  const [endereco, setEndereco] = useState(baladaExistente?.endereco || '');
+  const [data, setData] = useState(baladaExistente?.data ? new Date(baladaExistente.data) : null);
+  const [tipo, setTipo] = useState(baladaExistente?.tipo || '');
+  const [cidade, setCidade] = useState(baladaExistente?.cidade || '');
   const [saving, setSaving] = useState(false);
+  const [showDatePicker, setShowDatePicker] = useState(false);
 
   useEffect(() => {
     navigation.setOptions({
-      title: isEditando ? 'Editar Cliente' : 'Adicionar Cliente',
+      title: isEditando ? 'Editar Balada' : 'Adicionar Balada',
     });
   }, [isEditando, navigation]);
 
-  const salvarCliente = async () => {
-    if (!nome.trim() || !email.trim()) {
-      Alert.alert('Erro', 'Nome e email são obrigatórios');
+  const formatDate = (date) => {
+    if (!date) return '';
+    const year = date.getFullYear();
+    const month = (date.getMonth() + 1).toString().padStart(2, '0');
+    const day = date.getDate().toString().padStart(2, '0');
+    return `${year}-${month}-${day}`;
+  };
+
+  const onChangeDate = (event, selectedDate) => {
+    setShowDatePicker(Platform.OS === 'ios');
+    if (selectedDate) {
+      setData(selectedDate);
+    }
+  };
+
+  const salvarBalada = async () => {
+    if (!nome.trim() || !endereco.trim() || !data || !tipo.trim() || !cidade.trim()) {
+      Alert.alert('Erro', 'Por favor, preencha todos os campos obrigatórios');
       return;
     }
 
     setSaving(true);
     try {
-      const cliente = {
+      const balada = {
         nome: nome.trim(),
-        email: email.trim(),
-        telefone: telefone.trim(),
         endereco: endereco.trim(),
+        data: formatDate(data),
+        tipo: tipo.trim(),
+        cidade: cidade.trim(),
       };
 
       if (isEditando) {
-        await updateClient(clienteExistente.id, cliente);
-        Alert.alert('Sucesso', 'Cliente atualizado com sucesso', [
-          { text: 'OK', onPress: () => navigation.navigate('Clientes') }
+        await updateBalada(baladaExistente.id, balada);
+        Alert.alert('Sucesso', 'Balada atualizada com sucesso', [
+          { text: 'OK', onPress: () => navigation.navigate('Baladas') },
         ]);
       } else {
-        await createClient(cliente);
-        Alert.alert('Sucesso', 'Cliente adicionado com sucesso', [
-          { text: 'OK', onPress: () => navigation.navigate('Clientes') }
+        await createBalada(balada);
+        Alert.alert('Sucesso', 'Balada adicionada com sucesso', [
+          { text: 'OK', onPress: () => navigation.navigate('Baladas') },
         ]);
       }
     } catch (error) {
-      Alert.alert('Erro', `Não foi possível salvar o cliente.\n${error.message}`);
+      Alert.alert('Erro', `Não foi possível salvar a balada.\n${error.message}`);
     } finally {
       setSaving(false);
     }
@@ -66,55 +85,78 @@ export default function CadastroClienteScreen({ navigation, route }) {
   return (
     <ScrollView style={styles.container}>
       <View style={styles.form}>
+
         <View style={styles.inputGroup}>
           <Text style={styles.label}>Nome *</Text>
           <TextInput
             style={styles.input}
-            placeholder="Digite o nome completo"
+            placeholder="Digite o nome da balada"
             value={nome}
             onChangeText={setNome}
           />
         </View>
 
         <View style={styles.inputGroup}>
-          <Text style={styles.label}>Email *</Text>
+          <Text style={styles.label}>Endereço *</Text>
           <TextInput
             style={styles.input}
-            placeholder="Digite o email"
-            keyboardType="email-address"
-            autoCapitalize="none"
-            value={email}
-            onChangeText={setEmail}
-          />
-        </View>
-
-        <View style={styles.inputGroup}>
-          <Text style={styles.label}>Telefone</Text>
-          <TextInput
-            style={styles.input}
-            placeholder="Digite o telefone"
-            keyboardType="phone-pad"
-            value={telefone}
-            onChangeText={setTelefone}
-          />
-        </View>
-
-        <View style={styles.inputGroup}>
-          <Text style={styles.label}>Endereço</Text>
-          <TextInput
-            style={[styles.input, styles.textArea]}
-            placeholder="Digite o endereço completo"
-            multiline
-            numberOfLines={3}
+            placeholder="Digite o endereço"
             value={endereco}
             onChangeText={setEndereco}
           />
         </View>
 
-        <TouchableOpacity style={styles.saveButton} onPress={salvarCliente} disabled={saving}>
-          {saving ? <ActivityIndicator color="white" /> : <Save size={20} color="white" style={styles.buttonIcon} />}
+        <View style={styles.inputGroup}>
+          <Text style={styles.label}>Data *</Text>
+          <TouchableOpacity
+            style={styles.input}
+            onPress={() => setShowDatePicker(true)}
+            activeOpacity={0.7}
+          >
+            <Text style={{ color: data ? '#000' : '#9ca3af' }}>
+              {data ? formatDate(data) : 'Selecione a data'}
+            </Text>
+          </TouchableOpacity>
+          {showDatePicker && (
+            <DateTimePicker
+              value={data || new Date()}
+              mode="date"
+              display="default"
+              onChange={onChangeDate}
+              maximumDate={new Date(2026, 11, 31)}
+              minimumDate={new Date(2025, 9, 18)}
+            />
+          )}
+        </View>
+
+        <View style={styles.inputGroup}>
+          <Text style={styles.label}>Tipo *</Text>
+          <TextInput
+            style={styles.input}
+            placeholder="Digite o tipo (ex: Show de Rock)"
+            value={tipo}
+            onChangeText={setTipo}
+          />
+        </View>
+
+        <View style={styles.inputGroup}>
+          <Text style={styles.label}>Cidade *</Text>
+          <TextInput
+            style={styles.input}
+            placeholder="Digite a cidade"
+            value={cidade}
+            onChangeText={setCidade}
+          />
+        </View>
+
+        <TouchableOpacity style={styles.saveButton} onPress={salvarBalada} disabled={saving}>
+          {saving ? (
+            <ActivityIndicator color="white" />
+          ) : (
+            <Save size={20} color="white" style={styles.buttonIcon} />
+          )}
           <Text style={styles.saveButtonText}>
-            {isEditando ? 'Atualizar' : 'Salvar'} Cliente
+             Salvar  Balada
           </Text>
         </TouchableOpacity>
       </View>
@@ -127,9 +169,24 @@ const styles = StyleSheet.create({
   form: { padding: 16 },
   inputGroup: { marginBottom: 20 },
   label: { fontSize: 16, fontWeight: '500', color: '#374151', marginBottom: 8 },
-  input: { backgroundColor: 'white', borderWidth: 1, borderColor: '#D1D5DB', borderRadius: 8, padding: 12, fontSize: 16 },
-  textArea: { minHeight: 100, textAlignVertical: 'top' },
-  saveButton: { backgroundColor: '#4F46E5', flexDirection: 'row', justifyContent: 'center', alignItems: 'center', padding: 16, borderRadius: 8, marginTop: 20 },
+  input: {
+    backgroundColor: 'white',
+    borderWidth: 1,
+    borderColor: '#D1D5DB',
+    borderRadius: 8,
+    padding: 12,
+    fontSize: 16,
+    justifyContent: 'center',
+  },
+  saveButton: {
+    backgroundColor: '#4F46E5',
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
+    padding: 16,
+    borderRadius: 8,
+    marginTop: 20,
+  },
   buttonIcon: { marginRight: 8 },
   saveButtonText: { color: 'white', fontSize: 16, fontWeight: '600' },
 });
