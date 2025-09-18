@@ -2,7 +2,7 @@
 const Balada = require('../models/balada');
 // Controlador para obter todas as baladas
 exports.getAllBaladas = (req, res) => {
-Balada.getAllBaladas((err, baladas) => {
+Balada.getAllBaladas((err, baladas) => { 
 if (err) {
 res.status(500).send(err);
 } else {
@@ -12,7 +12,7 @@ res.json(baladas);
 };
 // Controlador para obter balada pela cidade
 exports.getBaladaByCidade = (req, res) => { //armazenar a requisição que usuario digitar
-Balada.getBaladaByCidade(req.params.cidade, (err, balada) => { if (err) {
+Balada.getBaladaByCidade(req.params.cidade, (err, balada) => { if (err) { 
 res.status(500).send(err);
 } else if (balada) {
 res.json(balada);
@@ -32,7 +32,7 @@ res.status(404).send({ message: 'Balada não encontrado' }); }
 };
 // Controlador para criar uma nova balada
 exports.createBalada = (req, res) => {
-Balada.createBalada(req.body, (err, result) => {
+Balada.createBalada(req.body, (err, result) => {// req.body contém os dados da nova balada
 if (err) {
 res.status(500).send(err);
 } else {
