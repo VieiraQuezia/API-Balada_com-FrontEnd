@@ -12,8 +12,7 @@ router.get('/:cidade', baladaController.getBaladaByCidade);
 router.get('/data/:data', baladaController.getBaladaByData);
 // Rota para criar um novo cliente 
 router.post('/', baladaController.createBalada); 
-// Rota para atualizar um cliente existente 
-router.put('/:id', baladaController.updateBalada); 
+
 // Rota para deletar um cliente 
 router.delete('/:id', baladaController.deleteBalada); 
 module.exports = router;
