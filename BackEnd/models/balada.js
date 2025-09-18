@@ -28,17 +28,10 @@ function getBaladaByCidade(cidade, callback) {
     callback(err, row);
   });
 }
-// Função para buscar uma balada por data
-function getBaladaByData(data, callback) {
-  const db = openDbConnection();
-  db.all("SELECT * FROM Baladas WHERE data = ?", [data], (err, row) => {
-    db.close();
-    callback(err, row);
-  });
-}
+
 // Função para criar uma nova balada
-function createBalada(cliente, callback) {
-  const { endereco, data, tipo, cidade } = cliente;
+function createBalada(balada, callback) {
+  const { endereco, data, tipo, cidade } = balada;
   const db = openDbConnection();
   db.run(
     "INSERT INTO Baladas (endereco, data, tipo, cidade) VALUES (?, ?, ?, ?)",
@@ -49,25 +42,21 @@ function createBalada(cliente, callback) {
     }
   );
 }
-// Função para atualizar um cliente existente
-function updateBalada(id, cliente, callback) {
-  const { endereco, data, tipo, cidade } = cliente;
-  const db = openDbConnection();
-  db.run(
-    "UPDATE Baladas SET endereco = ?, data = ?, tipo = ?, cidade = ? WHERE id = ?",
-    [endereco, data, tipo, cidade, id],
-    function (err) {
-      db.close();
-      callback(err, { changes: this.changes });
-    }
-  );
-}
-// Função para deletar um cliente
+
+// Função para deletar um balada
 function deleteBalada(id, callback) {
   const db = openDbConnection();
   db.run("DELETE FROM Baladas WHERE id = ?", [id], function (err) {
     db.close();
     callback(err, { changes: this.changes });
+  });
+}
+// Função para buscar uma balada por data
+function getBaladaByData(data, callback) {
+  const db = openDbConnection();
+  db.all("SELECT * FROM Baladas WHERE data = ?", [data], (err, row) => {
+    db.close();
+    callback(err, row);
   });
 }
 module.exports = {
