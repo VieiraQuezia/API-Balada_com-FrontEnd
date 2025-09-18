@@ -49,7 +49,7 @@ export default function CadastroBaladaScreen({ navigation, route }) {
   };
 
   const salvarBalada = async () => {
-    if (!nome.trim() || !endereco.trim() || !data || !tipo.trim() || !cidade.trim()) {
+    if (!endereco.trim() || !data || !tipo.trim() || !cidade.trim()) {
       Alert.alert('Erro', 'Por favor, preencha todos os campos obrigatórios');
       return;
     }
