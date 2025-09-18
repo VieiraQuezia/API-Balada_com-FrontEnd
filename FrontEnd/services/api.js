@@ -39,5 +39,9 @@ export const updateBalada = async (id, balada) => {
   const res = await axios.put(`${API_URL}/${id}`, balada);
   return res.data;
 };
+export const deleteBalada = async (id) => {
+  const res = await axios.delete(`${API_URL}/${id}`);
+  return res.data;
+}
 
 

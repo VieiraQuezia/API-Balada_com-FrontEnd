@@ -1,7 +1,8 @@
 import React from 'react';
-import { View, Text, ScrollView, StyleSheet } from 'react-native';
+import { View, Text, ScrollView, StyleSheet, TouchableOpacity, Alert } from 'react-native';
+import { deleteBalada } from "../services/api";
 
-export default function DetalhesBaladaScreen({ route }) {
+export default function DetalhesBaladaScreen({ route, navigation }) {
   const { balada } = route.params;
 
   return (
@@ -24,12 +25,20 @@ export default function DetalhesBaladaScreen({ route }) {
         <Text style={styles.value}>{balada.descricao || 'Sem descrição'}</Text>
       </View>
 
-      <View style={styles.section}>
-        <Text style={styles.label}>Preço</Text>
-        <Text style={styles.value}>
-          {balada.preco ? `R$ ${balada.preco}` : 'Gratuito / não informado'}
-        </Text>
-      </View>
+     
+      <TouchableOpacity style={{backgroundColor: '#ef4444', padding: 12, borderRadius: 8, alignItems: 'center', marginTop: 16}} onPress={async () => {
+        try {
+          await deleteBalada(balada.id);
+            Alert.alert('Sucesso', 'Balada deletada com sucesso!');
+        } catch (error) {
+          Alert.alert('Erro', `Não foi possível deletar a balada.\n${error.message}`);
+        }
+        finally {
+          navigation.navigate('Baladas');
+        }
+        }}>
+        <Text> Deletar</Text>
+      </TouchableOpacity>
     </ScrollView>
   );
 }
