@@ -62,13 +62,16 @@ return (
 <View style={styles.inputRow}>
 <Search size={18} color="#6b7280" />
 <TextInput placeholder="Cidade" style={styles.input} value={cidade} onChangeText={setCidade} />
+{cidade && (
+<TouchableOpacity onPress={()=>{setCidade('')}} style={styles.clearBtn}><X size={18} /></TouchableOpacity>
+)}
 </View>
 
 
 <View style={styles.inputRow}>
 <TextInput placeholder="Data (YYYY-MM-DD)" style={[styles.input, {flex:1}]} value={data} onChangeText={setData} />
-{ (cidade || data) && (
-<TouchableOpacity onPress={limpar} style={styles.clearBtn}><X size={18} /></TouchableOpacity>
+{data && (
+<TouchableOpacity onPress={()=>{setData('')}} style={styles.clearBtn}><X size={18} /></TouchableOpacity>
 )}
 </View>
 
