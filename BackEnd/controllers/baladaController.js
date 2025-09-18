@@ -11,7 +11,7 @@ res.json(baladas);
 });
 };
 // Controlador para obter balada pela cidade
-exports.getBaladaByCidade = (req, res) => {
+exports.getBaladaByCidade = (req, res) => { //armazenar a requisição que usuario digitar
 Balada.getBaladaByCidade(req.params.cidade, (err, balada) => { if (err) {
 res.status(500).send(err);
 } else if (balada) {
