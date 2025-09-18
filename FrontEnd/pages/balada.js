@@ -9,7 +9,6 @@ import {
   ActivityIndicator,
   Alert,
 } from "react-native";
-import DateTimePicker from '@react-native-community/datetimepicker';
 import { getBaladas, searchCidade, searchData } from "../services/api";
 import { Search, X } from "lucide-react-native";
 
@@ -114,27 +113,7 @@ const pesquisarData = async () => {
           )}
         </View>
 
-        <View style={styles.inputRow}>
-         <DateTimePicker
-            value={data || new Date()}
-            mode="date"
-            display="default"
-            onChangeText={setData}
-            maximumDate={new Date(2026, 11, 31)}
-            minimumDate={new Date(2022, 9, 18)}
-            style={{ width: '100%' }}
-          />
-          {data && (
-            <TouchableOpacity
-              onPress={() => {
-                setData("");
-              }}
-              style={styles.clearBtn}
-            >
-              <X size={18} />
-            </TouchableOpacity>
-          )}
-        </View>
+       
 
         <View style={{ flexDirection: "row", gap: 8 }}>
           <TouchableOpacity style={styles.searchButton} onPress={pesquisar}>

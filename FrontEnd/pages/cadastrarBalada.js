@@ -57,7 +57,6 @@ export default function CadastroBaladaScreen({ navigation, route }) {
     setSaving(true);
     try {
       const balada = {
-        nome: nome.trim(),
         endereco: endereco.trim(),
         data: formatDate(data),
         tipo: tipo.trim(),
@@ -86,16 +85,7 @@ export default function CadastroBaladaScreen({ navigation, route }) {
     <ScrollView style={styles.container}>
       <View style={styles.form}>
 
-        <View style={styles.inputGroup}>
-          <Text style={styles.label}>Nome *</Text>
-          <TextInput
-            style={styles.input}
-            placeholder="Digite o nome da balada"
-            value={nome}
-            onChangeText={setNome}
-          />
-        </View>
-
+      
         <View style={styles.inputGroup}>
           <Text style={styles.label}>Endereço *</Text>
           <TextInput
